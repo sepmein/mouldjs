@@ -9,33 +9,46 @@ class Validator {
 }
 
 class Schema {
-    constructor(db, collectionName, options, validator) {
-        this.db = db;
-        this.collectionName = collectionName;
-        this.options = options;
+    constructor(validator) {
         this.validator = validator;
     }
 
-    createCollection() {
-        this.collection = this.db.collection(this.collection, options);
-        return this.collection;
+    setValidationLevel(level) {
+        let levels = ['strict', 'moderate', 'off'];
+        let match;
+        for (let l of levels) {
+            if (l === level) {
+                match = level;
+            }
+        }
+        if (match) {
+            this.validationLevel = match;
+        } else {
+            throw(new Error('[mongo-schema-native] #validation level ' +
+                'should be one of ( strict / moderate / off )'));
+        }
     }
 
-    addValidator() {
-        return this.db.command(this.validator);
+    setValidationAction(action) {
+        let actions = ['warn', 'error'];
+        let match;
+        for (let a of actions) {
+            if (a === action) {
+                match = action;
+            }
+        }
+        if (match) {
+            this.validationAction = match;
+        } else {
+            throw(new Error('[mongo-schema-native] #validation action ' +
+                'should be one of ( warn / error )'));
+        }
     }
 
-    exec(resolve, reject) {
-        let collection = this.createCollection();
-        this.addValidator()
-            .then( result => {
-                if (result.ok) {
-                    resolve(collection);
-                } else {
-                    reject(new Error('some Error'));
-                }
-            })
-            .catch(error => reject(error));
+    applyTo(db, collection) {
+        db.command({
+            collMod: collection
+        });
     }
 }
 
