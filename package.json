@@ -1,6 +1,6 @@
 {
-  "name": "mongo-schema-native",
-  "version": "0.0.1",
+  "name": "mouldjs",
+  "version": "0.0.2",
   "description": "Generate a mongodb schema validation natively. Support mongodb > 3.2",
   "main": "index.js",
   "scripts": {
@@ -12,13 +12,14 @@
     "schema",
     "validation"
   ],
-  "author": "sepmein@hotmail.com",
+  "author": "sepmein, sepmein@hotmail.com",
   "license": "MIT",
   "devDependencies": {
     "chai": "^3.4.1",
     "mocha": "^2.3.4"
   },
   "dependencies": {
+    "is-js": "^0.1.1",
     "kerberos": "0.0.17",
     "mongodb": "^2.1.2"
   }
