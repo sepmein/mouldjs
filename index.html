@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>Mongo-schema-native by sepmein</title>
+    <title>Mould.js by sepmein</title>
 
     <link rel="stylesheet" href="stylesheets/styles.css">
     <link rel="stylesheet" href="stylesheets/github-light.css">
@@ -15,38 +15,100 @@
   <body>
     <div class="wrapper">
       <header>
-        <h1>Mongo-schema-native</h1>
-        <p></p>
+        <h1>Mould.js</h1>
+        <p>A database level schema designer for using mongodb in nodejs.</p>
 
-        <p class="view"><a href="https://github.com/sepmein/mongo-schema-native">View the Project on GitHub <small>sepmein/mongo-schema-native</small></a></p>
+        <p class="view"><a href="https://github.com/sepmein/mouldjs">View the Project on GitHub <small>sepmein/mouldjs</small></a></p>
 
 
         <ul>
-          <li><a href="https://github.com/sepmein/mongo-schema-native/zipball/master">Download <strong>ZIP File</strong></a></li>
-          <li><a href="https://github.com/sepmein/mongo-schema-native/tarball/master">Download <strong>TAR Ball</strong></a></li>
-          <li><a href="https://github.com/sepmein/mongo-schema-native">View On <strong>GitHub</strong></a></li>
+          <li><a href="https://github.com/sepmein/mouldjs/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/sepmein/mouldjs/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/sepmein/mouldjs">View On <strong>GitHub</strong></a></li>
         </ul>
       </header>
       <section>
         <h1>
-<a id="mongo-schema-native" class="anchor" href="#mongo-schema-native" aria-hidden="true"><span class="octicon octicon-link"></span></a>Mongo Schema Native</h1>
+<a id="mouldjs" class="anchor" href="#mouldjs" aria-hidden="true"><span class="octicon octicon-link"></span></a>Mould.js</h1>
 
 <h2>
-<a id="define-schema-on-database-level" class="anchor" href="#define-schema-on-database-level" aria-hidden="true"><span class="octicon octicon-link"></span></a>Define Schema on database level.</h2>
+<a id="define-schema-on-database-level" class="anchor" href="#define-schema-on-database-level" aria-hidden="true"><span class="octicon octicon-link"></span></a>Define Schema on Database level.</h2>
 
-<p><a href="https://docs.mongodb.org/v3.2/core/document-validation/">Document validation</a> has been introduced to <a href="http://mongodb.org">MongoDb</a> since version 3.2. Before that, we could only define schema on application level.  </p>
+<p><a href="https://docs.mongodb.org/v3.2/core/document-validation/">Document validation</a> has been introduced to <a href="http://mongodb.org">MongoDb</a> since version 3.2 . Before that, we could only define schema on application level.</p>
+
+<h3>
+<a id="differences-between-mouldjs-and-mongoose" class="anchor" href="#differences-between-mouldjs-and-mongoose" aria-hidden="true"><span class="octicon octicon-link"></span></a>Differences between Mould.js and Mongoose</h3>
+
+<table>
+<thead>
+<tr>
+<th align="center">Feature</th>
+<th align="center">Mongoose</th>
+<th align="center">Mould.js</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center">Schema Level</td>
+<td align="center">Application</td>
+<td align="center">Database</td>
+</tr>
+<tr>
+<td align="center">Features</td>
+<td align="center">Full</td>
+<td align="center">Minimal</td>
+</tr>
+</tbody>
+</table>
 
 <h3>
 <a id="get-started-with-database-level-schema-validation" class="anchor" href="#get-started-with-database-level-schema-validation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Get Started with Database Level Schema Validation</h3>
 
 <blockquote>
-<p><strong>Attention</strong>: <code>mongodb</code> version &gt;= 3.2 required
-    npm install mongo-schema-native --save</p>
+<p><strong>Attention</strong>: <code>mongodb</code> version &gt;= 3.2 required</p>
 </blockquote>
 
-<pre><code>let Schema = require('mongo-schema-native')
-let user = new Schema();
-</code></pre>
+<ol>
+<li>
+<p>Installation:</p>
+
+<p>npm install mouldjs --save</p>
+</li>
+<li>
+<p>Define Schema</p>
+
+<p>let Schema = require('mouldjs')
+let userSchema = new Schema({
+    name  : {$type: 'string', $exists: true},
+    age   : {$type: 'int', $lt: 200},
+    email : {$regex: \"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$"} 
+    sex   : {$in: ['male','female','unknown']}
+});</p>
+</li>
+</ol>
+
+<blockquote>
+<p>check full <a href="/#schema-lists">schema lists</a>.</p>
+</blockquote>
+
+<ol>
+<li>
+<p>Apply</p>
+
+<p>//with callback
+userSchema.applyTo(db, collection, function(done){
+    if(done.ok) {...}
+});
+//with promise
+userSchema.applyTo(db, collection).then(...);</p>
+</li>
+</ol>
+
+<blockquote>
+<p><a href="/#apis">api docs</a></p>
+
+<hr>
+</blockquote>
       </section>
       <footer>
         <p>This project is maintained by <a href="https://github.com/sepmein">sepmein</a></p>
@@ -54,6 +116,16 @@ let user = new Schema();
       </footer>
     </div>
     <script src="javascripts/scale.fix.js"></script>
-    
+              <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-71807007-1");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
   </body>
 </html>
