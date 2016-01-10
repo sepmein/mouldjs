@@ -1,34 +1,25 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en-us">
   <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta charset="UTF-8">
     <title>Mould.js by sepmein</title>
-
-    <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/github-light.css">
-    <meta name="viewport" content="width=device-width">
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
   </head>
   <body>
-    <div class="wrapper">
-      <header>
-        <h1>Mould.js</h1>
-        <p>A database level schema designer for using mongodb in nodejs.</p>
+    <section class="page-header">
+      <h1 class="project-name">Mould.js</h1>
+      <h2 class="project-tagline">A database level schema designer for using mongodb in nodejs.</h2>
+      <a href="https://github.com/sepmein/mouldjs" class="btn">View on GitHub</a>
+      <a href="https://github.com/sepmein/mouldjs/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/sepmein/mouldjs/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
 
-        <p class="view"><a href="https://github.com/sepmein/mouldjs">View the Project on GitHub <small>sepmein/mouldjs</small></a></p>
-
-
-        <ul>
-          <li><a href="https://github.com/sepmein/mouldjs/zipball/master">Download <strong>ZIP File</strong></a></li>
-          <li><a href="https://github.com/sepmein/mouldjs/tarball/master">Download <strong>TAR Ball</strong></a></li>
-          <li><a href="https://github.com/sepmein/mouldjs">View On <strong>GitHub</strong></a></li>
-        </ul>
-      </header>
-      <section>
-        <h1>
+    <section class="main-content">
+      <h1>
 <a id="mouldjs" class="anchor" href="#mouldjs" aria-hidden="true"><span class="octicon octicon-link"></span></a>Mould.js</h1>
 
 <h2>
@@ -68,55 +59,61 @@
 <p><strong>Attention</strong>: <code>mongodb</code> version &gt;= 3.2 required</p>
 </blockquote>
 
-<ol>
-<li>
-<p>Installation:</p>
+<ul>
+<li><strong>Installation</strong></li>
+</ul>
 
-<p>npm install mouldjs --save</p>
-</li>
-<li>
-<p>Define Schema</p>
+<pre><code>npm install mouldjs --save
+</code></pre>
 
-<p>let Schema = require('mouldjs')
-let userSchema = new Schema({
-    name  : {$type: 'string', $exists: true},
-    age   : {$type: 'int', $lt: 200},
-    email : {$regex: \"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$"} 
-    sex   : {$in: ['male','female','unknown']}
-});</p>
-</li>
-</ol>
+<ul>
+<li><strong>Define Schema</strong></li>
+</ul>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">let</span> Schema <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>mouldjs<span class="pl-pds">'</span></span>)
+<span class="pl-k">let</span> userSchema <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-en">Schema</span>({
+    name  <span class="pl-k">:</span> {$type<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>string<span class="pl-pds">'</span></span>, $exists<span class="pl-k">:</span> <span class="pl-c1">true</span>},
+    age   <span class="pl-k">:</span> {$type<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>int<span class="pl-pds">'</span></span>, $lt<span class="pl-k">:</span> <span class="pl-c1">200</span>},
+    email <span class="pl-k">:</span> {$regex<span class="pl-k">:</span> \<span class="pl-s"><span class="pl-pds">"</span>^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+<span class="pl-cce">\.</span>[a-zA-Z0-9-.]+$<span class="pl-pds">"</span></span>\} 
+    sex   <span class="pl-k">:</span> {$in<span class="pl-k">:</span> [<span class="pl-s"><span class="pl-pds">'</span>male<span class="pl-pds">'</span></span>,<span class="pl-s"><span class="pl-pds">'</span>female<span class="pl-pds">'</span></span>,<span class="pl-s"><span class="pl-pds">'</span>unknown<span class="pl-pds">'</span></span>]}
+});</pre></div>
 
 <blockquote>
 <p>check full <a href="/#schema-lists">schema lists</a>.</p>
 </blockquote>
 
-<ol>
-<li>
-<p>Apply</p>
+<ul>
+<li><strong>Apply To Db</strong></li>
+</ul>
 
-<p>//with callback
-userSchema.applyTo(db, collection, function(done){
-    if(done.ok) {...}
+<div class="highlight highlight-source-js"><pre><span class="pl-c">//with callback</span>
+<span class="pl-smi">userSchema</span>.<span class="pl-en">applyTo</span>(db, collection, <span class="pl-k">function</span>(<span class="pl-smi">done</span>){
+    <span class="pl-k">if</span>(<span class="pl-smi">done</span>.<span class="pl-smi">ok</span>) {...}
 });
-//with promise
-userSchema.applyTo(db, collection).then(...);</p>
-</li>
-</ol>
+<span class="pl-c">//with promise</span>
+<span class="pl-smi">userSchema</span>.<span class="pl-en">applyTo</span>(db, collection).<span class="pl-en">then</span>(...);</pre></div>
 
 <blockquote>
 <p><a href="/#apis">api docs</a></p>
+</blockquote>
 
 <hr>
-</blockquote>
-      </section>
-      <footer>
-        <p>This project is maintained by <a href="https://github.com/sepmein">sepmein</a></p>
-        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+
+<h3>
+<a id="api" class="anchor" href="#api" aria-hidden="true"><span class="octicon octicon-link"></span></a>Api</h3>
+
+<h3>
+<a id="examples" class="anchor" href="#examples" aria-hidden="true"><span class="octicon octicon-link"></span></a>Examples</h3>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/sepmein/mouldjs">Mould.js</a> is maintained by <a href="https://github.com/sepmein">sepmein</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
       </footer>
-    </div>
-    <script src="javascripts/scale.fix.js"></script>
-              <script type="text/javascript">
+
+    </section>
+
+            <script type="text/javascript">
             var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
             document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
           </script>
