@@ -75,6 +75,11 @@ class Schema {
             return db.command(validationCmd);
         }
     }
+
+    /*todo add validator*/
+    validator() {
+
+    }
 }
 
 module.exports = Schema;
