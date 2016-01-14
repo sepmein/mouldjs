@@ -1,7 +1,7 @@
 {
   "name": "mouldjs",
-  "version": "0.0.2",
-  "description": "Generate a mongodb schema validation natively. Support mongodb > 3.2",
+  "version": "0.0.3",
+  "description": "Generate a mongodb schema validation natively. Support mongodb >= 3.2",
   "main": "index.js",
   "scripts": {
     "test": "mocha"
