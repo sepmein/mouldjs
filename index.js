@@ -6,7 +6,7 @@ const is = require('is-js');
 const Collection = require('./node_modules/mongodb/lib/collection');
 const Db = require('mongodb').Db;
 
-class Schema {
+class Mould {
     constructor(validator) {
         this.validator = validator;
         this.validationLevel = 'strict';
@@ -47,7 +47,7 @@ class Schema {
         return this;
     }
 
-    applyTo(db, collection, cb) {
+    applyTo(db, collection) {
         let coll, validationCmd;
         if (is.string(collection)) {
             coll = collection;
@@ -69,17 +69,99 @@ class Schema {
             validationAction: this.validationAction
         };
         //make commands
-        if(is.function(cb)){
-            db.command(validationCmd, cb);
-        } else {
-            return db.command(validationCmd);
-        }
+        return new Promise((resolve, reject) => {
+            Mould.checkCollectionExists(db, coll)
+                .then((result)=> {
+                    if (!result) {
+                        db.createCollection(coll)
+                            .then(()=> {
+                                db.command(validationCmd).then((result) =>resolve(result));
+                            });
+                    } else {
+                        db.command(validationCmd).then((result) => resolve(result));
+                    }
+                })
+                .catch((err) => {
+                    reject(err);
+                });
+        });
+    }
+
+    /**
+     * @method
+     * @param {Object} db
+     * @param {String} collectionName
+     * @return {Promise}
+     * */
+    static checkCollectionExists(db, collectionName) {
+        let filter = {
+            name: collectionName
+        };
+        return new Promise((resolve, reject) => {
+            db.listCollections(filter).toArray((err, items) => {
+                if (err) {
+                    reject(err);
+                } else if (items.length === 0) {
+                    resolve(false);
+                } else {
+                    resolve(true);
+                }
+            });
+        });
+    }
+
+    /**
+     * @method
+     * @param {Object} db
+     * @param {String} collectionName
+     * @return {Promise} then(0-no collection found | )
+     * @resolve {0 - no collection found | undefined - no mould found | object - mould}
+     * @reject {err}
+     * */
+    static getCollectionValidator(db, collectionName) {
+        let filter = {
+            name: collectionName
+        };
+        return new Promise((resolve, reject) => {
+            db.listCollections(filter).toArray((err, items) => {
+                if (err) {
+                    reject(err);
+                } else if (items.length === 0) {
+                    resolve(0);
+                } else if (!(items[0].options.validator)) {
+                    resolve(undefined);
+                } else {
+                    resolve(items[0].options.validator);
+                }
+            });
+        });
     }
 
     /*todo add validator*/
     validator() {
 
     }
+
+    /**
+     * @return {Promise}
+     * */
+    static isMongoVersionSupported(db) {
+        return new Promise((resolve, reject)=> {
+            db.admin().serverInfo(function (err, result) {
+                if (err) {
+                    reject(err);
+                } else {
+                    let version = result.versionArray;
+                    if (version[0] >= 3 && version[1] >= 2) {
+                        resolve(true);
+                    } else {
+                        reject(new Error('Schema Validation is only supported on mongodb >= 3.2.0\n' +
+                            'The installed version is ' + result.version));
+                    }
+                }
+            });
+        })
+    }
 }
 
-module.exports = Schema;
+module.exports = Mould;

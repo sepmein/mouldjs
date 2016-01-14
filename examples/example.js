@@ -1,7 +1,8 @@
 var MongoClient = require('mongodb').MongoClient
     , assert = require('assert')
-    , DbClass = require('./node_modules/mongodb/lib/db')
-    , DbC = require('mongodb').Db;
+    , DbClass = require('../node_modules/mongodb/lib/db')
+    , DbC = require('mongodb').Db
+    , Schema = require('../index');
 
 console.log('is db exposed', (DbClass === DbC));
 
@@ -15,5 +16,33 @@ MongoClient.connect(url, function(err, db) {
     console.log('db instanceof DbClass', db instanceof DbClass);
     console.log('db instanceof DbC', db instanceof DbC);
 
-    db.close();
+    var UserSchema = new Schema({
+        username: {
+            $exists: false,
+            $type: 'string'
+        },
+        password: {
+            $exists: true,
+            $type: 'string'
+        }
+    });
+
+    Schema.isMongoVersionSupported(db)
+        .then((result) => {
+            console.log(result);
+        })
+        .catch((err) => {
+            console.error(err);
+        });
+
+    //console.log(UserSchema);
+    UserSchema.applyTo(db, 'user1')
+        .then((result)=> {
+            console.log(result);
+            db.close();
+        })
+        .catch((err) => {
+            console.log(err.stack);
+            db.close();
+        });
 });
