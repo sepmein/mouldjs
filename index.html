@@ -25,7 +25,9 @@
 <h2>
 <a id="define-schema-on-database-level" class="anchor" href="#define-schema-on-database-level" aria-hidden="true"><span class="octicon octicon-link"></span></a>Define Schema on Database level.</h2>
 
-<p><a href="https://docs.mongodb.org/v3.2/core/document-validation/">Document validation</a> has been introduced to <a href="http://mongodb.org">MongoDb</a> since version 3.2 . Before that, we could only define schema on application level.</p>
+<p><a href="https://docs.mongodb.org/v3.2/core/document-validation/">Document validation</a> has been introduced to <a href="http://mongodb.org">MongoDb</a> since version 3.2 . Before that, we could only define schema on application level.
+With Mould.js, we could define schema easily on database level, which means you could apply or modify the schema rule to collections as the bootstrap step of your application.
+After that, the validation is connection or application independent, the document will always be validated first whenever it is inserted or modified.</p>
 
 <h3>
 <a id="differences-between-mouldjs-and-mongoose" class="anchor" href="#differences-between-mouldjs-and-mongoose" aria-hidden="true"><span class="octicon octicon-link"></span></a>Differences between Mould.js and Mongoose</h3>
@@ -70,11 +72,11 @@
 <li><strong>Define Schema</strong></li>
 </ul>
 
-<div class="highlight highlight-source-js"><pre><span class="pl-k">let</span> Schema <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>mouldjs<span class="pl-pds">'</span></span>)
-<span class="pl-k">let</span> userSchema <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-en">Schema</span>({
+<div class="highlight highlight-source-js"><pre><span class="pl-k">let</span> Mould <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>mouldjs<span class="pl-pds">'</span></span>)
+<span class="pl-k">let</span> User <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-en">Mould</span>({
     name  <span class="pl-k">:</span> {$type<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>string<span class="pl-pds">'</span></span>, $exists<span class="pl-k">:</span> <span class="pl-c1">true</span>},
     age   <span class="pl-k">:</span> {$type<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>int<span class="pl-pds">'</span></span>, $lt<span class="pl-k">:</span> <span class="pl-c1">200</span>},
-    email <span class="pl-k">:</span> {$regex<span class="pl-k">:</span> \<span class="pl-s"><span class="pl-pds">"</span>^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+<span class="pl-cce">\.</span>[a-zA-Z0-9-.]+$<span class="pl-pds">"</span></span>\} 
+    email <span class="pl-k">:</span> {$regex<span class="pl-k">:</span> \<span class="pl-s"><span class="pl-pds">"</span>^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+<span class="pl-cce">\.</span>[a-zA-Z0-9-.]+$<span class="pl-pds">"</span></span>\}
     sex   <span class="pl-k">:</span> {$in<span class="pl-k">:</span> [<span class="pl-s"><span class="pl-pds">'</span>male<span class="pl-pds">'</span></span>,<span class="pl-s"><span class="pl-pds">'</span>female<span class="pl-pds">'</span></span>,<span class="pl-s"><span class="pl-pds">'</span>unknown<span class="pl-pds">'</span></span>]}
 });</pre></div>
 
@@ -86,12 +88,10 @@
 <li><strong>Apply To Db</strong></li>
 </ul>
 
-<div class="highlight highlight-source-js"><pre><span class="pl-c">//with callback</span>
-<span class="pl-smi">userSchema</span>.<span class="pl-en">applyTo</span>(db, collection, <span class="pl-k">function</span>(<span class="pl-smi">done</span>){
-    <span class="pl-k">if</span>(<span class="pl-smi">done</span>.<span class="pl-smi">ok</span>) {...}
-});
-<span class="pl-c">//with promise</span>
-<span class="pl-smi">userSchema</span>.<span class="pl-en">applyTo</span>(db, collection).<span class="pl-en">then</span>(...);</pre></div>
+<div class="highlight highlight-source-js"><pre><span class="pl-c">//with promise</span>
+<span class="pl-smi">User</span>.<span class="pl-en">applyTo</span>(db, collection)
+    .<span class="pl-en">then</span>(...)
+    .<span class="pl-en">catch</span>(...);</pre></div>
 
 <blockquote>
 <p><a href="/#apis">api docs</a></p>
@@ -100,10 +100,82 @@
 <hr>
 
 <h3>
-<a id="api" class="anchor" href="#api" aria-hidden="true"><span class="octicon octicon-link"></span></a>Api</h3>
+<a id="api" class="anchor" href="#api" aria-hidden="true"><span class="octicon octicon-link"></span></a><strong>Api</strong>
+</h3>
+
+<h4>
+<a id="class-mould-constructor" class="anchor" href="#class-mould-constructor" aria-hidden="true"><span class="octicon octicon-link"></span></a>Class Mould Constructor</h4>
+
+<h4>
+<a id="applytodb-collection" class="anchor" href="#applytodb-collection" aria-hidden="true"><span class="octicon octicon-link"></span></a>.applyTo(db, collection)</h4>
+
+<p>Apply the <code>Mould</code> to specified collection of <code>db</code>. 
+<code>db</code> is an instance of <a href="http://mongodb.github.io/node-mongodb-native/">node-mongodb-native-driver</a> <code>Db</code> class.
+If the collection is not found in the <code>db</code>, the method will create collection for you, then apply the mould.
+If the collection is existed and already has some data, the method will success as well.
+But later on, any data inserted will be tested against the Schema. </p>
+
+<p><em>Parameters</em>:</p>
+
+<ul>
+<li>db: The specified db you want to apply the <code>Mould</code>.
+-- type : should be an instance of <a href="http://mongodb.github.io/node-mongodb-native/">node-mongodb-native-driver</a> <code>Db</code> class.</li>
+<li>collection: The specified collection you want to apply <code>Mould</code>.
+-- type : could be a <code>String</code> which matches the collection name;
+      could also be a <code>collection</code> instance of <a href="http://mongodb.github.io/node-mongodb-native/">node-mongodb-native-driver</a>
+</li>
+</ul>
+
+<p><em>Return</em>:</p>
+
+<p>Return a <code>Promise</code> contains information which indicates whether the application is succeeded or failed.</p>
+
+<ul>
+<li>type: Promise
+-- resolve: {ok:1} if success
+-- reject: error</li>
+</ul>
+
+<h6>
+<a id="example" class="anchor" href="#example" aria-hidden="true"><span class="octicon octicon-link"></span></a>example</h6>
+
+<h4>
+<a id="setvalidationlevel" class="anchor" href="#setvalidationlevel" aria-hidden="true"><span class="octicon octicon-link"></span></a>.setValidationLevel</h4>
+
+<h4>
+<a id="setvalidationaction" class="anchor" href="#setvalidationaction" aria-hidden="true"><span class="octicon octicon-link"></span></a>.setValidationAction</h4>
+
+<h4>
+<a id="static-checkcollectionexists" class="anchor" href="#static-checkcollectionexists" aria-hidden="true"><span class="octicon octicon-link"></span></a>static checkCollectionExists</h4>
+
+<h4>
+<a id="static-getcollectionvalidator" class="anchor" href="#static-getcollectionvalidator" aria-hidden="true"><span class="octicon octicon-link"></span></a>static getCollectionValidator</h4>
+
+<h4>
+<a id="static-ismongoversionsupport" class="anchor" href="#static-ismongoversionsupport" aria-hidden="true"><span class="octicon octicon-link"></span></a>static isMongoVersionSupport</h4>
 
 <h3>
 <a id="examples" class="anchor" href="#examples" aria-hidden="true"><span class="octicon octicon-link"></span></a>Examples</h3>
+
+<p>Check the examples folder</p>
+
+<h3>
+<a id="types" class="anchor" href="#types" aria-hidden="true"><span class="octicon octicon-link"></span></a>Types</h3>
+
+<p>Types: <a href="https://docs.mongodb.org/v3.2/reference/operator/query/type/#document-type-available-types">https://docs.mongodb.org/v3.2/reference/operator/query/type/#document-type-available-types</a></p>
+
+<h3>
+<a id="validators" class="anchor" href="#validators" aria-hidden="true"><span class="octicon octicon-link"></span></a>Validators</h3>
+
+<p>Validator: <a href="https://docs.mongodb.org/v3.2/core/document-validation/">https://docs.mongodb.org/v3.2/core/document-validation/</a></p>
+
+<hr>
+
+<p>TODO</p>
+
+<ul>
+<li>add validator</li>
+</ul>
 
       <footer class="site-footer">
         <span class="site-footer-owner"><a href="https://github.com/sepmein/mouldjs">Mould.js</a> is maintained by <a href="https://github.com/sepmein">sepmein</a>.</span>
