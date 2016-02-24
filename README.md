@@ -1,8 +1,7 @@
 # Mould.js
 ## Define Schema on Database level.
 [Document validation](https://docs.mongodb.org/v3.2/core/document-validation/) has been introduced to [MongoDb](http://mongodb.org) since version 3.2 . Before that, we could only define schema on application level.
-With Mould.js, we could define schema easily on database level, which means you could apply or modify the schema rule to collections as the bootstrap step of your application.
-After that, the validation is connection or application independent, the document will always be validated first whenever it is inserted or modified.
+With Mould.js, we could easily define schemas on the database level, which means once the schema validator applied to collections at the bootstrap step, the document will always be validated first whenever it is inserted or modified and the validation will be connection or application independent. 
 
 ### Differences between Mould.js and Mongoose
 
@@ -29,7 +28,7 @@ let User = new Mould({
     sex   : {$in: ['male','female','unknown']}
 });
 ```
->check full [schema lists](/#schema-lists).
+>*check full [schema lists](/#schema-lists).*
 
 - **Apply To Db**
 ```javascript
@@ -38,7 +37,7 @@ User.applyTo(db, collection)
     .then(...)
     .catch(...);
 ```
->[api docs](/#apis)
+>*[api docs](#api)*
 
 ---
 ### **Api**
@@ -64,7 +63,7 @@ Return a `Promise` contains information which indicates whether the application 
 -- resolve: {ok:1} if success
 -- reject: error
 
-###### example
+###### Example
 
 #### .setValidationLevel
 #### .setValidationAction
